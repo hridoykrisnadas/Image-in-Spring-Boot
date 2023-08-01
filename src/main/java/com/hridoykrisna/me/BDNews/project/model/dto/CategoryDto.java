@@ -1,12 +1,12 @@
 package com.hridoykrisna.me.BDNews.project.model.dto;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
+import com.hridoykrisna.me.BDNews.project.model.BaseModel;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@ToString
 public class CategoryDto {
     private int id;
     @NotBlank(message = "Name is Mandatory")

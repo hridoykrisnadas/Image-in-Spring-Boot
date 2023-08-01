@@ -55,6 +55,15 @@ public final class ResponseBuilder {
                 .build();
     }
 
+    public static ResponseDto getSuccessMessage(HttpStatus status, String message) {
+        return ResponseDto.builder()
+                .message(message)
+                .status(status.getReasonPhrase())
+                .statusCode(status.value())
+                .timestamp(new Date().getTime())
+                .build();
+    }
+
     public static ResponseDto getSuccessMessage(HttpStatus status, String message, Object content, int numberOfElement) {
         return ResponseDto.builder()
                 .message(message)

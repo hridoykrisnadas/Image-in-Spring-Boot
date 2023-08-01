@@ -9,15 +9,9 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@ToString
 @Entity
 @Table(name = "_category")
-public class Category extends BaseModel {
-    private int id;
+public class Category extends BaseModel{
     private String name;
-    @ManyToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = {
-            CascadeType.MERGE
-    })
-    @JsonIgnore
-    private List<Post> post;
 }

@@ -4,11 +4,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import jakarta.persistence.*;
+import lombok.ToString;
 
 import java.util.Date;
 
 @MappedSuperclass
 @Data
+@ToString
 public abstract class BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +26,6 @@ public abstract class BaseModel {
     @PrePersist
     public void setPreInsertData() {
         this.createdAt = new Date();
-        System.out.println(createdAt);
         this.isActive = true;
     }
 
