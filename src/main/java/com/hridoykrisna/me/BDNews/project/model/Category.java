@@ -14,4 +14,5 @@ import java.util.*;
 @Table(name = "_category")
 public class Category extends BaseModel{
     private String name;
+    private String image;
 }

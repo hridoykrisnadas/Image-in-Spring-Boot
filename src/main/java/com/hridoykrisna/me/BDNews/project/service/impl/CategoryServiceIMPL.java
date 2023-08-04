@@ -1,12 +1,11 @@
 package com.hridoykrisna.me.BDNews.project.service.impl;
 
 import com.hridoykrisna.me.BDNews.auth.DB.Session;
-import com.hridoykrisna.me.BDNews.auth.user.User;
-import com.hridoykrisna.me.BDNews.project.controller.CategoryController;
 import com.hridoykrisna.me.BDNews.project.model.Category;
 import com.hridoykrisna.me.BDNews.project.model.dto.CategoryDto;
 import com.hridoykrisna.me.BDNews.project.repository.CategoryRepo;
 import com.hridoykrisna.me.BDNews.project.service.CategoryService;
+import com.hridoykrisna.me.BDNews.project.service.FileService;
 import com.hridoykrisna.me.BDNews.util.ResponseBuilder;
 import com.hridoykrisna.me.BDNews.util.ResponseDTO.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,9 @@ import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -22,9 +23,11 @@ import java.util.*;
 public class CategoryServiceIMPL implements CategoryService {
     private final CategoryRepo categoryRepo;
     private final ModelMapper modelMapper;
+    private final FileService fileService;
 
     @Override
-    public ResponseDto create(CategoryDto category) {
+    public ResponseDto create(String path, CategoryDto category) throws IOException {
+
         Category category1 = modelMapper.map(category, Category.class);
 
         Session.user.ifPresent(user -> category1.setCreatedBy(user.getId()));
@@ -32,6 +35,21 @@ public class CategoryServiceIMPL implements CategoryService {
             Category result = categoryRepo.save(category1);
             return ResponseBuilder.getSuccessMessage(HttpStatus.ACCEPTED, "Insert Success");
         } else {
+            return ResponseBuilder.getFailureMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        }
+    }
+
+    @Override
+    public ResponseDto create(String path, MultipartFile image, String name)  {
+        String imageName = null;
+        try {
+            imageName = fileService.uploadImage(path, image, name);
+            Category category = new Category(name, imageName);
+            Category result = categoryRepo.save(category);
+            CategoryDto categoryDto = modelMapper.map(result, CategoryDto.class);
+            System.out.println(categoryDto);
+            return ResponseBuilder.getSuccessMessage(HttpStatus.OK, "Image Upload Successful", categoryDto);
+        } catch (IOException e) {
             return ResponseBuilder.getFailureMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
         }
     }
@@ -77,6 +95,8 @@ public class CategoryServiceIMPL implements CategoryService {
             return ResponseBuilder.getFailureMessage(HttpStatus.NOT_FOUND, "Id Not Found");
         }
     }
+
+
 
     private List<CategoryDto> categoryDtos (List < Category > categoryList) {
             List<CategoryDto> categoryDtoList = new ArrayList<>();

@@ -1,12 +1,14 @@
 package com.hridoykrisna.me.BDNews.project.service;
 
-import com.hridoykrisna.me.BDNews.project.controller.CategoryController;
 import com.hridoykrisna.me.BDNews.project.model.dto.CategoryDto;
 import com.hridoykrisna.me.BDNews.util.ResponseDTO.ResponseDto;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 public interface CategoryService {
-    ResponseDto create(CategoryDto category);
+    ResponseDto create(String s, CategoryDto category) throws IOException;
 
     ResponseDto update(CategoryDto category);
 
@@ -15,4 +17,6 @@ public interface CategoryService {
     ResponseDto getDetails(int id);
 
     ResponseDto delete(int id);
+
+    ResponseDto create(String s, MultipartFile image, String name) throws IOException;
 }
