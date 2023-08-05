@@ -25,6 +25,8 @@ public class CategoryServiceIMPL implements CategoryService {
     private final ModelMapper modelMapper;
     private final FileService fileService;
 
+
+    //FOR Normal
     @Override
     public ResponseDto create(String path, CategoryDto category) throws IOException {
 
@@ -39,6 +41,7 @@ public class CategoryServiceIMPL implements CategoryService {
         }
     }
 
+    //For Image
     @Override
     public ResponseDto create(String path, MultipartFile image, String name)  {
         String imageName = null;
@@ -46,9 +49,9 @@ public class CategoryServiceIMPL implements CategoryService {
             imageName = fileService.uploadImage(path, image, name);
             Category category = new Category(name, imageName);
             Category result = categoryRepo.save(category);
-            CategoryDto categoryDto = modelMapper.map(result, CategoryDto.class);
-            System.out.println(categoryDto);
-            return ResponseBuilder.getSuccessMessage(HttpStatus.OK, "Image Upload Successful", categoryDto);
+//            CategoryDto categoryDto = modelMapper.map(result, CategoryDto.class);
+//            categoryDto.setImageName(imageName);
+            return ResponseBuilder.getSuccessMessage(HttpStatus.OK, imageName + " : Image Upload Successful");
         } catch (IOException e) {
             return ResponseBuilder.getFailureMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
         }

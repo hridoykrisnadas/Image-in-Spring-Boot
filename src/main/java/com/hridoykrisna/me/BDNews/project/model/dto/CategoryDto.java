@@ -16,5 +16,5 @@ public class CategoryDto {
     @NotBlank(message = "Name is Mandatory")
     private String name;
     @NotBlank(message = "Image is Mandatory")
-    private MultipartFile image;
+    private String image;
 }
