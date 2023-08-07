@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuthorizationDTO {
     private String token;
+    private String message;
 }

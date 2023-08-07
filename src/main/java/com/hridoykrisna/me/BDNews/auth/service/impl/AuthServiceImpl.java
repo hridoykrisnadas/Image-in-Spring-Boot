@@ -5,6 +5,7 @@ import com.hridoykrisna.me.BDNews.auth.repository.UserRepository;
 import com.hridoykrisna.me.BDNews.auth.service.AuthService;
 import com.hridoykrisna.me.BDNews.auth.user.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,11 +28,20 @@ public class AuthServiceImpl implements AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ADMIN)
                 .build();
-        userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return AuthorizationDTO.builder()
-                .token(jwtToken)
-                .build();
+        try{
+            userRepository.save(user);
+            var jwtToken = jwtService.generateToken(user);
+            return AuthorizationDTO.builder()
+                    .token(jwtToken)
+                    .message("Registration Successful.")
+                    .build();
+        } catch (Exception e){
+            return AuthorizationDTO.builder()
+                    .token(e.getMessage())
+                    .message("Registration Unsuccessful, Already Registered by this email.")
+                    .build();
+        }
+
     }
 
     @Override
@@ -54,9 +64,9 @@ public class AuthServiceImpl implements AuthService {
                     .build();
         } catch (Exception ex){
             return AuthorizationDTO.builder()
-                    .token(ex.getMessage()+", Please Login With Correct Email & Password")
+                    .token(ex.getMessage())
+                    .message("Please Login With Correct Email & Password")
                     .build();
         }
-
     }
 }
